@@ -59,7 +59,7 @@ async function getSallingStuff(zip?: string) {
     const url = `https://api.sallinggroup.com/v1/food-waste/?zip=${zipCode}`
     const response = await fetch(url, {
         headers: {
-            Authorization: "Bearer c1c77366-a3b9-44f4-94f8-e3b7087709a8",
+            Authorization: process.env.SALLING_API,
         },
     })
     const res = await response.json()
