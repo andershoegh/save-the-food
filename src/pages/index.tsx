@@ -13,7 +13,7 @@ const Home: NextPage = () => {
 
     console.log(data)
 
-    if (isLoading) return <div>Is loading</div>
+    if (isLoading) return <div>Fetching data</div>
     return (
         <>
             <Head>
