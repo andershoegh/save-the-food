@@ -1,17 +1,19 @@
 import type { NextPage } from "next"
 import Head from "next/head"
 import Image from "next/image"
+import { useState } from "react"
 import { trpc } from "../utils/trpc"
 
 const Home: NextPage = () => {
+    const [zip, setZip] = useState<string>("")
+    const [zipToUseInAPICall, setZipToUseInAPICall] = useState<string>("9220")
+
     const { data, isLoading } = trpc.useQuery(
-        ["example.hello", { zip: "9220" }],
+        ["example.hello", { zip: zipToUseInAPICall }],
         {
             refetchInterval: 60000,
         }
     )
-
-    console.log(data)
 
     if (isLoading) return <div>Fetching data</div>
     return (
@@ -22,7 +24,28 @@ const Home: NextPage = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <main className="mx-auto flex min-h-screen flex-col items-center justify-center py-10">
-                Save the food
+                Zip Code:
+                <input
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            setZipToUseInAPICall(zip)
+                        }
+                    }}
+                    max={4}
+                    type="text"
+                    onChange={(e) => {
+                        setZip(e.target.value)
+                    }}
+                    className="border-2 border-gray-400"
+                />
+                <button
+                    className="mt-2 rounded-lg bg-blue-200 py-2 px-4"
+                    onClick={() => {
+                        setZipToUseInAPICall(zip)
+                    }}
+                >
+                    Search
+                </button>
                 <div>
                     {data?.map((sallingLocation) => {
                         const { store, clearances } = sallingLocation
