@@ -23,7 +23,7 @@ const Home: NextPage = () => {
                 <meta name="description" content="Save the food" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main className="mx-auto flex min-h-screen flex-col items-center justify-center py-10">
+            <main className=" flex min-h-screen flex-col items-center justify-center py-10">
                 Zip Code:
                 <input
                     onKeyDown={(e) => {
