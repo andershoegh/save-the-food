@@ -8,10 +8,10 @@ import { trpc } from "../utils/trpc"
 
 const Home: NextPage = () => {
     const [zip, setZip] = useState<string>("")
-    const [zipToUseInAPICall, setZipToUseInAPICall] = useState<string>("9220")
+    const [zipToUseInAPICall, setZipToUseInAPICall] = useState<string>("9220")    
 
     const { data, isLoading } = trpc.useQuery(
-        ["example.hello", { zip: zipToUseInAPICall }],
+        ["salling.foodWasteInfo", { zip: zipToUseInAPICall }],
         {
             refetchInterval: 60000,
         }
