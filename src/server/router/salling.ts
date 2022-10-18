@@ -53,10 +53,116 @@ const storeWithClearance = z.object({
     store: sallingStoreInformation,
 })
 
+const storeInfoSchema = z.object({
+    address: z.object({
+      city: z.string(),
+      country: z.string(),
+      extra: z.string().nullable(),
+      street: z.string(),
+      zip: z.string()
+    }),
+    attributes: z.object({
+      babyChanging: z.boolean().optional(),
+      bakery: z.boolean().optional(),
+      carlsJunior: z.boolean().optional(),
+      clickAndCollect: z.boolean().optional(),
+      enablingFacilities: z.boolean().optional(),
+      flowers: z.boolean().optional(),
+      foodClickAndCollect: z.boolean().optional(),
+      garden: z.boolean().optional(),
+      holidayOpen: z.boolean().optional(),
+      nonFood: z.boolean().optional(),
+      open247: z.boolean().optional(),
+      parking: z.string().optional(),
+      parkingRestrictions: z.boolean().optional(),
+      petFood: z.boolean().optional(),
+      pharmacy: z.boolean().optional(),
+      smileyscheme: z.string().optional(),
+      starbucks: z.boolean().optional(),
+      swipBox: z.boolean().optional(),
+      wc: z.boolean().optional(),
+      wifi: z.boolean().optional()
+    }),
+    brand: z.string(),
+    coordinates: z.array(z.number()),
+    created: z.string(),
+    distance_km: z.number().nullable(),
+    hours: z.array(
+      z.object({
+        close: z.string().nullable().optional(),
+        closed: z.boolean().nullable().optional(),
+        date: z.string().nullable().optional(),
+        open: z.string().nullable().optional(),
+        type: z.string().nullable().optional(),
+        customerFlow: z.array(z.number()).nullable().optional()
+      })
+    ),
+    id: z.string(),
+    modified: z.string(),
+    name: z.string(),
+    phoneNumber: z.string(),
+    sapSiteId: z.string(),
+    type: z.string(),
+    vikingStoreId: z.string()
+  })
+
+const storeInfoShortSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    brand: z.string(),
+})
+
 const sallingResponseSchema = z.array(storeWithClearance)
+const sallingStoreInfoSchema = z.array(storeInfoSchema)
+const sallingStoreInfoShortSchema = z.array(storeInfoShortSchema)
 
 export type StoreWithClearance = z.infer<typeof storeWithClearance>
 export type Clearance = z.infer<typeof clearance>
+
+
+async function getSallingStoreInfo(zip?: string) {
+    // The only brands that have food waste 
+    const brands = ['foetex', 'netto', 'bilka']
+
+    const zipCode = zip || "9220"
+
+    // Return only the fields "id", "name" and "brand" for each store
+    const fields = "id%2Cname%2Cbrand"
+
+    // Number of stores to return. This might have to be increased in high density areas.
+    const per_page = "20"
+
+    const url = `https://api.sallinggroup.com/v2/stores/?fields=${fields}&per_page=${per_page}&zip=${zipCode}`
+    const response = await fetch(url, {
+        headers: {
+            Authorization: process.env.SALLING_KEY || "",
+        },
+    })
+    const res = await response.json()
+
+    // Filter the response so only the info on stores with food waste is kept. 
+    const sallingStoreInfo = sallingStoreInfoShortSchema.parse(res).filter(element => brands.includes( element.brand))
+
+    return sallingStoreInfo
+}
+
+async function getSallingStoreFoodWaste(id?: string) {
+    // Default ID is for Føtex Aalborg Øst
+    const ID = id || '0c43176d-96ab-4914-b66d-4c8b8f63f381'
+
+    const url = `https://api.sallinggroup.com/v1/food-waste/${ID}`
+    const response = await fetch(url, {
+        headers: {
+            Authorization: process.env.SALLING_KEY || "",
+        },
+    })
+    const res = await response.json()
+
+    const clearances = storeWithClearance.parse(res)
+
+    return clearances
+}
+
 
 async function getSallingStuff(zip?: string) {
     const zipCode = zip || "9220"
@@ -74,7 +180,8 @@ async function getSallingStuff(zip?: string) {
     return sallingResponse
 }
 
-export const exampleRouter = createRouter().query("hello", {
+
+export const exampleRouter = createRouter().query("foodWasteInfo", {
     input: z
         .object({
             zip: z.string().optional(),
@@ -85,5 +192,19 @@ export const exampleRouter = createRouter().query("hello", {
             return undefined
         }
         return getSallingStuff(input.zip)
+    },
+})
+
+export const storeInfoRouter = createRouter().query("storeInfo", {
+    input: z
+        .object({
+            zip: z.string().optional(),
+        })
+        .nullish(),
+    resolve({ input }) {
+        if (!input) {
+            return undefined
+        }
+        return getSallingStoreInfo(input.zip)
     },
 })

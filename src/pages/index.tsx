@@ -11,7 +11,7 @@ const Home: NextPage = () => {
     const [zipToUseInAPICall, setZipToUseInAPICall] = useState<string>("9220")
 
     const { data, isLoading } = trpc.useQuery(
-        ["salling.hello", { zip: zipToUseInAPICall }],
+        ["salling.foodWasteInfo", { zip: zipToUseInAPICall }],
         {
             refetchInterval: 60000,
         }
