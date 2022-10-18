@@ -11,7 +11,7 @@ const Home: NextPage = () => {
     const [zipToUseInAPICall, setZipToUseInAPICall] = useState<string>("9220")
 
     const { data, isLoading } = trpc.useQuery(
-        ["example.hello", { zip: zipToUseInAPICall }],
+        ["salling.hello", { zip: zipToUseInAPICall }],
         {
             refetchInterval: 60000,
         }
@@ -30,7 +30,7 @@ const Home: NextPage = () => {
                 <meta name="description" content="Save the food" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main className="flex h-screen w-screen flex-col overflow-y-scroll bg-zinc-100">
+            <main className="relative flex h-screen w-screen flex-col overflow-y-scroll bg-zinc-100">
                 <div className="pt-2">
                     <div className="relative mx-2">
                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -103,6 +103,9 @@ const Home: NextPage = () => {
                         Ingen butikker fundet på post nr: {zipToUseInAPICall}
                     </div>
                 )}
+                <div className="fixed bottom-4 left-4 right-4 flex items-center justify-center rounded-full border border-gray-100 bg-white py-4 px-2 text-sm font-medium text-slate-700 shadow-xl">
+                    Click to choose a store
+                </div>
             </main>
         </>
     )
