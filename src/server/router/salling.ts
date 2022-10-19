@@ -55,47 +55,47 @@ const storeWithClearance = z.object({
 
 const storeInfoSchema = z.object({
     address: z.object({
-      city: z.string(),
-      country: z.string(),
-      extra: z.string().nullable(),
-      street: z.string(),
-      zip: z.string()
+        city: z.string(),
+        country: z.string(),
+        extra: z.string().nullable(),
+        street: z.string(),
+        zip: z.string(),
     }),
     attributes: z.object({
-      babyChanging: z.boolean().optional(),
-      bakery: z.boolean().optional(),
-      carlsJunior: z.boolean().optional(),
-      clickAndCollect: z.boolean().optional(),
-      enablingFacilities: z.boolean().optional(),
-      flowers: z.boolean().optional(),
-      foodClickAndCollect: z.boolean().optional(),
-      garden: z.boolean().optional(),
-      holidayOpen: z.boolean().optional(),
-      nonFood: z.boolean().optional(),
-      open247: z.boolean().optional(),
-      parking: z.string().optional(),
-      parkingRestrictions: z.boolean().optional(),
-      petFood: z.boolean().optional(),
-      pharmacy: z.boolean().optional(),
-      smileyscheme: z.string().optional(),
-      starbucks: z.boolean().optional(),
-      swipBox: z.boolean().optional(),
-      wc: z.boolean().optional(),
-      wifi: z.boolean().optional()
+        babyChanging: z.boolean().optional(),
+        bakery: z.boolean().optional(),
+        carlsJunior: z.boolean().optional(),
+        clickAndCollect: z.boolean().optional(),
+        enablingFacilities: z.boolean().optional(),
+        flowers: z.boolean().optional(),
+        foodClickAndCollect: z.boolean().optional(),
+        garden: z.boolean().optional(),
+        holidayOpen: z.boolean().optional(),
+        nonFood: z.boolean().optional(),
+        open247: z.boolean().optional(),
+        parking: z.string().optional(),
+        parkingRestrictions: z.boolean().optional(),
+        petFood: z.boolean().optional(),
+        pharmacy: z.boolean().optional(),
+        smileyscheme: z.string().optional(),
+        starbucks: z.boolean().optional(),
+        swipBox: z.boolean().optional(),
+        wc: z.boolean().optional(),
+        wifi: z.boolean().optional(),
     }),
     brand: z.string(),
     coordinates: z.array(z.number()),
     created: z.string(),
     distance_km: z.number().nullable(),
     hours: z.array(
-      z.object({
-        close: z.string().nullable().optional(),
-        closed: z.boolean().nullable().optional(),
-        date: z.string().nullable().optional(),
-        open: z.string().nullable().optional(),
-        type: z.string().nullable().optional(),
-        customerFlow: z.array(z.number()).nullable().optional()
-      })
+        z.object({
+            close: z.string().nullable().optional(),
+            closed: z.boolean().nullable().optional(),
+            date: z.string().nullable().optional(),
+            open: z.string().nullable().optional(),
+            type: z.string().nullable().optional(),
+            customerFlow: z.array(z.number()).nullable().optional(),
+        })
     ),
     id: z.string(),
     modified: z.string(),
@@ -103,8 +103,8 @@ const storeInfoSchema = z.object({
     phoneNumber: z.string(),
     sapSiteId: z.string(),
     type: z.string(),
-    vikingStoreId: z.string()
-  })
+    vikingStoreId: z.string(),
+})
 
 const storeInfoShortSchema = z.object({
     id: z.string(),
@@ -119,12 +119,11 @@ const sallingStoreInfoShortSchema = z.array(storeInfoShortSchema)
 export type StoreWithClearance = z.infer<typeof storeWithClearance>
 export type Clearance = z.infer<typeof clearance>
 
+async function getSallingStoresInZip(zip: string) {
+    // The only brands that have food waste
+    const brands = ["foetex", "netto", "bilka"]
 
-async function getSallingStoreInfo(zip?: string) {
-    // The only brands that have food waste 
-    const brands = ['foetex', 'netto', 'bilka']
-
-    const zipCode = zip || "9220"
+    const zipCode = zip
 
     // Return only the fields "id", "name" and "brand" for each store
     const fields = "id%2Cname%2Cbrand"
@@ -140,15 +139,17 @@ async function getSallingStoreInfo(zip?: string) {
     })
     const res = await response.json()
 
-    // Filter the response so only the info on stores with food waste is kept. 
-    const sallingStoreInfo = sallingStoreInfoShortSchema.parse(res).filter(element => brands.includes( element.brand))
+    // Filter the response so only the info on stores with food waste is kept.
+    const sallingStores = sallingStoreInfoShortSchema
+        .parse(res)
+        .filter((element) => brands.includes(element.brand))
 
-    return sallingStoreInfo
+    return sallingStores
 }
 
 async function getSallingStoreFoodWaste(id?: string) {
     // Default ID is for Føtex Aalborg Øst
-    const ID = id || '0c43176d-96ab-4914-b66d-4c8b8f63f381'
+    const ID = id || "0c43176d-96ab-4914-b66d-4c8b8f63f381"
 
     const url = `https://api.sallinggroup.com/v1/food-waste/${ID}`
     const response = await fetch(url, {
@@ -162,7 +163,6 @@ async function getSallingStoreFoodWaste(id?: string) {
 
     return clearances
 }
-
 
 async function getSallingStuff(zip?: string) {
     const zipCode = zip || "9220"
@@ -180,7 +180,6 @@ async function getSallingStuff(zip?: string) {
     return sallingResponse
 }
 
-
 export const exampleRouter = createRouter().query("foodWasteInfo", {
     input: z
         .object({
@@ -195,16 +194,16 @@ export const exampleRouter = createRouter().query("foodWasteInfo", {
     },
 })
 
-export const storeInfoRouter = createRouter().query("storeInfo", {
+export const storeInfoRouter = createRouter().query("getStores", {
     input: z
         .object({
             zip: z.string().optional(),
         })
         .nullish(),
     resolve({ input }) {
-        if (!input) {
+        if (!input || !input.zip) {
             return undefined
         }
-        return getSallingStoreInfo(input.zip)
+        return getSallingStoresInZip(input.zip)
     },
 })

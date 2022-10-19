@@ -1,6 +1,6 @@
 import dayjs from "dayjs"
 import Image from "next/image"
-import { ArrowDown, ArrowFatDown, ImageSquare } from "phosphor-react"
+import { ArrowDown, ImageSquare } from "phosphor-react"
 import React from "react"
 import { Clearance } from "../server/router/salling"
 
