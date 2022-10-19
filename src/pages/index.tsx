@@ -64,7 +64,7 @@ const Home: NextPage = () => {
         <meta name="description" content="Save the food" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="relative flex h-screen w-screen flex-col overflow-y-scroll bg-zinc-100">
+      <main className="relative flex h-screen w-screen flex-col bg-zinc-100">
         {storeFoodData ? (
           <div className="py-4" key={storeFoodData.store.id}>
             <div className="mx-2 grid grid-cols-2 gap-3">
@@ -92,9 +92,9 @@ const Home: NextPage = () => {
         )}
         <div
           onClick={() => setShowStoreSearchModal(true)}
-          className="absolute bottom-4 left-1/2 flex -translate-x-1/2  
-          justify-center rounded-md border border-gray-100 bg-white 
-        py-1.5  px-2 text-sm text-gray-600 shadow-xl"
+          className="absolute bottom-8 left-1/2 flex -translate-x-1/2  
+          cursor-pointer justify-center rounded-md border border-gray-100 
+        bg-white py-1.5 px-2 text-base text-gray-600 shadow-xl"
         >
           {chosenStoreID ? (
             <div className="relative flex items-center justify-between gap-6 px-2">
