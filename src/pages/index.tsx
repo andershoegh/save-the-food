@@ -92,7 +92,7 @@ const Home: NextPage = () => {
         )}
         <div
           onClick={() => setShowStoreSearchModal(true)}
-          className="absolute bottom-8 left-1/2 flex -translate-x-1/2  
+          className="fixed bottom-8 left-1/2 flex -translate-x-1/2  
           cursor-pointer justify-center rounded-md border border-gray-100 
         bg-white py-1.5 px-2 text-base text-gray-600 shadow-xl"
         >
