@@ -83,7 +83,7 @@ const Home: NextPage = () => {
             {chosenStoreID ? (
               <span>Fandt ingen produkter</span>
             ) : (
-              <div className="absolute bottom-16 flex flex-col items-center justify-center">
+              <div className="flex flex-col items-center justify-center">
                 <span>Find billige datovarer</span>
                 <ArrowDown className="mt-3" weight="bold" />
               </div>
