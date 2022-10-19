@@ -34,7 +34,7 @@ const Modal: React.FC<PropsWithChildren<Props>> = ({
     className,
 }) => {
     return ReactDOM.createPortal(
-        <div className="w-full">
+        <div className="max-h-screen w-full">
             <motion.div
                 className="absolute top-0 left-0 flex h-full w-screen items-center 
                 justify-center overflow-y-hidden bg-gray-200 bg-opacity-90"

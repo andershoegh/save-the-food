@@ -147,11 +147,8 @@ async function getSallingStoresInZip(zip: string) {
     return sallingStores
 }
 
-async function getSallingStoreFoodWaste(id?: string) {
-    // Default ID is for Føtex Aalborg Øst
-    const ID = id || "0c43176d-96ab-4914-b66d-4c8b8f63f381"
-
-    const url = `https://api.sallinggroup.com/v1/food-waste/${ID}`
+async function getSallingStoreFoodWaste(storeID: string) {
+    const url = `https://api.sallinggroup.com/v1/food-waste/${storeID}`
     const response = await fetch(url, {
         headers: {
             Authorization: process.env.SALLING_KEY || "",
@@ -164,33 +161,17 @@ async function getSallingStoreFoodWaste(id?: string) {
     return clearances
 }
 
-async function getSallingStuff(zip?: string) {
-    const zipCode = zip || "9220"
-
-    const url = `https://api.sallinggroup.com/v1/food-waste/?zip=${zipCode}`
-    const response = await fetch(url, {
-        headers: {
-            Authorization: process.env.SALLING_KEY || "",
-        },
-    })
-    const res = await response.json()
-
-    const sallingResponse = sallingResponseSchema.parse(res)
-
-    return sallingResponse
-}
-
-export const exampleRouter = createRouter().query("foodWasteInfo", {
+export const sallingFoodRouter = createRouter().query("foodWasteInfo", {
     input: z
         .object({
-            zip: z.string().optional(),
+            storeID: z.string(),
         })
         .nullish(),
     resolve({ input }) {
         if (!input) {
             return undefined
         }
-        return getSallingStuff(input.zip)
+        return getSallingStoreFoodWaste(input.storeID)
     },
 })
 
