@@ -46,7 +46,7 @@ const ProductCard = ({ clearance }: ProductCardProps) => {
           <div className="flex items-center rounded-full bg-green-300 px-1 py-0.5 text-[10px]">
             <span className="text-green-800">
               {offer.discount}
-              {offer.currency}{" "}
+              {offer.currency}
             </span>
             <ArrowDown weight="bold" />
           </div>

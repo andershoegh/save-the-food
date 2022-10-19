@@ -148,7 +148,7 @@ const Home: NextPage = () => {
                   />
                 )}
                 <input
-                  type="text"
+                  type="number"
                   autoFocus
                   value={zipToSearch}
                   placeholder="Indtast post nr."
@@ -178,7 +178,7 @@ const Home: NextPage = () => {
                   initial="hidden"
                   animate="show"
                   exit="exit"
-                  className=" max-h-80 overflow-scroll"
+                  className="max-h-80 overflow-scroll"
                   variants={containerAnimation}
                 >
                   {stores.map((store, idx) => {
