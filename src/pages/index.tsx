@@ -60,7 +60,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Save the food</title>⁄
+        <title>Save the food</title>
         <meta name="description" content="Save the food" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
