@@ -152,7 +152,7 @@ const Home: NextPage = () => {
                   autoFocus
                   value={zipToSearch}
                   placeholder="Indtast post nr."
-                  className="border-none text-gray-600 outline-none focus:ring-0"
+                  className="w-full border-none text-gray-600 outline-none focus:ring-0"
                   onChange={(e) => {
                     setZipToSearch(e.target.value)
                   }}
