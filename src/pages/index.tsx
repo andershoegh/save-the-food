@@ -64,7 +64,7 @@ const Home: NextPage = () => {
         <meta name="description" content="Save the food" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="relativeflex h-full w-screen flex-col bg-zinc-100">
+      <main className="relative flex h-full w-screen flex-col bg-zinc-100">
         {storeFoodData ? (
           <div className="py-4" key={storeFoodData.store.id}>
             <div className="mx-2 mb-20 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
@@ -83,7 +83,7 @@ const Home: NextPage = () => {
             {chosenStoreID ? (
               <span>Fandt ingen produkter</span>
             ) : (
-              <div className="flex flex-col items-center justify-center">
+              <div className="flex h-screen flex-col items-center justify-center">
                 <span>Find billige datovarer</span>
                 <ArrowDown className="mt-3" weight="bold" />
               </div>
