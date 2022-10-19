@@ -2,7 +2,12 @@ import { AnimatePresence, AnimationProps, motion } from "framer-motion"
 import type { NextPage } from "next"
 import Head from "next/head"
 import Image from "next/image"
-import { ArrowDown, CircleNotch, MagnifyingGlass } from "phosphor-react"
+import {
+  ArrowDown,
+  CircleNotch,
+  MagnifyingGlass,
+  WarningCircle,
+} from "phosphor-react"
 import { useState } from "react"
 import Modal from "../components/Modal"
 import ProductCard from "../components/ProductCard"
@@ -49,6 +54,8 @@ const Home: NextPage = () => {
       enabled: !!zipToSearch && zipToSearch.length === 4,
     }
   )
+
+  console.log(stores)
 
   if (loadingStoreFoodData)
     return (
@@ -152,6 +159,19 @@ const Home: NextPage = () => {
                 />
               </div>
               <div className="h-px bg-gray-200" />
+
+              {stores?.length === 0 && (
+                <motion.div
+                  animate={{ y: 0, opacity: 1 }}
+                  initial={{ y: -50, opacity: 0 }}
+                  className="my-6 flex flex-col items-center justify-center"
+                >
+                  <WarningCircle size={25} className="mb-2 text-yellow-500" />
+                  <span className="text-sm text-gray-600">
+                    Ingen butikker fundet i {zipToSearch}
+                  </span>
+                </motion.div>
+              )}
 
               {stores && (
                 <motion.div
