@@ -64,10 +64,10 @@ const Home: NextPage = () => {
         <meta name="description" content="Save the food" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="relative flex h-screen w-screen flex-col bg-zinc-100">
+      <main className="relativeflex h-screen w-screen flex-col bg-zinc-100">
         {storeFoodData ? (
           <div className="py-4" key={storeFoodData.store.id}>
-            <div className="mx-2 grid grid-cols-2 gap-3">
+            <div className="mx-2 mb-20 grid grid-cols-2 gap-3">
               {storeFoodData.clearances.map((clearance: Clearance) => {
                 return (
                   <ProductCard
@@ -94,7 +94,7 @@ const Home: NextPage = () => {
           onClick={() => setShowStoreSearchModal(true)}
           className="fixed bottom-8 left-1/2 flex -translate-x-1/2  
           cursor-pointer justify-center rounded-md border border-gray-100 
-        bg-white py-1.5 px-2 text-base text-gray-600 shadow-xl"
+        bg-white py-1.5 px-4 text-base text-gray-600 shadow-xl"
         >
           {chosenStoreID ? (
             <div className="relative flex items-center justify-between gap-6 px-2">
