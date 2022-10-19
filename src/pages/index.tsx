@@ -64,10 +64,10 @@ const Home: NextPage = () => {
         <meta name="description" content="Save the food" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="relativeflex h-screen w-screen flex-col bg-zinc-100">
+      <main className="relativeflex h-full w-screen flex-col bg-zinc-100">
         {storeFoodData ? (
           <div className="py-4" key={storeFoodData.store.id}>
-            <div className="mx-2 mb-20 grid grid-cols-2 gap-3">
+            <div className="mx-2 mb-20 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
               {storeFoodData.clearances.map((clearance: Clearance) => {
                 return (
                   <ProductCard
@@ -123,7 +123,7 @@ const Home: NextPage = () => {
           {showStoreSearchModal && (
             <Modal
               handleClose={() => setShowStoreSearchModal(false)}
-              className="w-3/4 rounded-md bg-white"
+              className="w-3/4 rounded-md bg-white  sm:w-2/4  md:w-2/5"
             >
               <div className="flex items-center px-4 py-4">
                 {loadingStores ? (
@@ -141,7 +141,7 @@ const Home: NextPage = () => {
                   />
                 )}
                 <input
-                  type="number"
+                  type="text"
                   autoFocus
                   value={zipToSearch}
                   placeholder="Indtast post nr."
@@ -168,7 +168,7 @@ const Home: NextPage = () => {
                           idx + 1 !== stores.length &&
                           "border-b border-gray-100"
                         } 
-                        flex  items-center px-3 `}
+                        flex  cursor-pointer items-center px-3`}
                         variants={storeItemAnimation}
                         key={store.id}
                         onClick={() => {
