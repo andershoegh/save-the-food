@@ -1,51 +1,21 @@
-import { AnimatePresence, AnimationProps, motion } from "framer-motion"
+import { AnimatePresence } from "framer-motion"
 import type { NextPage } from "next"
 import Head from "next/head"
 import Image from "next/image"
-import {
-  ArrowDown,
-  CircleNotch,
-  MagnifyingGlass,
-  WarningCircle,
-} from "phosphor-react"
+import { ArrowDown, CircleNotch, Info, MagnifyingGlass } from "phosphor-react"
 import { useState } from "react"
-import Modal from "../components/Modal"
+import Disclaimer from "../components/Disclaimer"
 import ProductCard from "../components/ProductCard"
+import StoreSearchModal from "../components/StoreSearchModal"
 import { Clearance } from "../server/router/salling"
+import { getStoreBrandLogo } from "../utils/getStoreBrand"
 import { trpc } from "../utils/trpc"
 
-const containerAnimation: AnimationProps["variants"] = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-  exit: {
-    opacity: 0,
-    transition: {
-      staggerChildren: 0.05,
-    },
-  },
-}
-
-const storeItemAnimation: AnimationProps["variants"] = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1 },
-  exit: { opacity: 0 },
-}
-
 const Home: NextPage = () => {
+  const [showDisclaimer, setShowDisclaimer] = useState(false)
   const [showStoreSearchModal, setShowStoreSearchModal] = useState(false)
   const [chosenStoreID, setchosenStoreID] = useState<string>("")
   const [zipToSearch, setZipToSearch] = useState<string>("")
-
-  const { data: storeFoodData, isLoading: loadingStoreFoodData } =
-    trpc.useQuery(["sallingFood.foodWasteInfo", { storeID: chosenStoreID }], {
-      refetchInterval: 60000,
-      enabled: !!chosenStoreID,
-    })
 
   const { data: stores, isLoading: loadingStores } = trpc.useQuery(
     ["sallingStore.getStores", { zip: zipToSearch }],
@@ -55,7 +25,11 @@ const Home: NextPage = () => {
     }
   )
 
-  console.log(stores)
+  const { data: storeFoodData, isLoading: loadingStoreFoodData } =
+    trpc.useQuery(["sallingFood.foodWasteInfo", { storeID: chosenStoreID }], {
+      refetchInterval: 60000,
+      enabled: !!chosenStoreID,
+    })
 
   if (loadingStoreFoodData)
     return (
@@ -72,8 +46,14 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="relative flex h-full w-screen flex-col bg-zinc-100">
+        <div className="flex items-center justify-between py-4 px-4">
+          <span className="text-sm text-gray-600">Save the food</span>
+          <button onClick={() => setShowDisclaimer(true)}>
+            <Info size={20} className="text-gray-600" />
+          </button>
+        </div>
         {storeFoodData ? (
-          <div className="py-4" key={storeFoodData.store.id}>
+          <div className="pb-4" key={storeFoodData.store.id}>
             <div className="mx-2 mb-20 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
               {storeFoodData.clearances.map((clearance: Clearance) => {
                 return (
@@ -97,6 +77,7 @@ const Home: NextPage = () => {
             )}
           </div>
         )}
+
         <div
           onClick={() => setShowStoreSearchModal(true)}
           className="fixed bottom-8 left-1/2 flex -translate-x-1/2  
@@ -127,94 +108,18 @@ const Home: NextPage = () => {
           )}
         </div>
         <AnimatePresence mode="wait">
+          {showDisclaimer && (
+            <Disclaimer closeModal={() => setShowDisclaimer(false)} />
+          )}
           {showStoreSearchModal && (
-            <Modal
-              handleClose={() => setShowStoreSearchModal(false)}
-              className="w-3/4 rounded-md bg-white  sm:w-2/4  md:w-2/5"
-            >
-              <div className="flex items-center px-4 py-4">
-                {loadingStores ? (
-                  <div className="">
-                    <CircleNotch
-                      className="mr-4 animate-spin text-gray-400"
-                      size={18}
-                    />
-                  </div>
-                ) : (
-                  <MagnifyingGlass
-                    className="mr-4 text-gray-400"
-                    weight="bold"
-                    size={18}
-                  />
-                )}
-                <input
-                  type="number"
-                  autoFocus
-                  value={zipToSearch}
-                  placeholder="Indtast post nr."
-                  className="w-full border-none text-gray-600 outline-none focus:ring-0"
-                  onChange={(e) => {
-                    setZipToSearch(e.target.value)
-                  }}
-                />
-              </div>
-              <div className="h-px bg-gray-200" />
-
-              {stores?.length === 0 && (
-                <motion.div
-                  animate={{ y: 0, opacity: 1 }}
-                  initial={{ y: -50, opacity: 0 }}
-                  className="my-6 flex flex-col items-center justify-center"
-                >
-                  <WarningCircle size={25} className="mb-2 text-yellow-500" />
-                  <span className="text-sm text-gray-600">
-                    Ingen butikker fundet i {zipToSearch}
-                  </span>
-                </motion.div>
-              )}
-
-              {stores && (
-                <motion.div
-                  initial="hidden"
-                  animate="show"
-                  exit="exit"
-                  className="max-h-80 overflow-scroll"
-                  variants={containerAnimation}
-                >
-                  {stores.map((store, idx) => {
-                    return (
-                      <motion.div
-                        className={`${
-                          idx + 1 !== stores.length &&
-                          "border-b border-gray-100"
-                        } 
-                        flex  cursor-pointer items-center px-3`}
-                        variants={storeItemAnimation}
-                        key={store.id}
-                        onClick={() => {
-                          setchosenStoreID(store.id)
-                          setShowStoreSearchModal(false)
-                        }}
-                      >
-                        <div className="relative my-2.5 mr-2 h-6 w-6">
-                          {store.brand && (
-                            <Image
-                              src={getStoreBrandLogo(store.brand)}
-                              alt={`Store brand  ${store.brand}`}
-                              objectFit="contain"
-                              layout="fill"
-                            />
-                          )}
-                        </div>
-                        <div className="text-sm text-gray-700">
-                          {store.name.substring(store.name.indexOf(" ") + 1)}
-                        </div>
-                      </motion.div>
-                    )
-                  })}
-                </motion.div>
-              )}
-            </Modal>
+            <StoreSearchModal
+              closeModal={() => setShowStoreSearchModal(false)}
+              stores={stores}
+              loadingStores={loadingStores}
+              setZipToSearch={(zip) => setZipToSearch(zip)}
+              setchosenStoreID={(storeID) => setchosenStoreID(storeID)}
+              zipToSearch={zipToSearch}
+            />
           )}
         </AnimatePresence>
       </main>
@@ -223,16 +128,3 @@ const Home: NextPage = () => {
 }
 
 export default Home
-
-function getStoreBrandLogo(brand: string) {
-  switch (brand) {
-    case "foetex":
-      return "/foetex.png"
-    case "netto":
-      return "/netto.png"
-    case "bilka":
-      return "/bilka.png"
-    default:
-      return "/missingBrandImage.png"
-  }
-}
